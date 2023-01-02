@@ -1,5 +1,7 @@
 const express = require('express'),
   morgan = require('morgan'),
+  fs = require('fs'),
+  path = require('path');
 
 // Variable for Express' functionality to configure web server
 const app = express();
@@ -59,6 +61,11 @@ let topMovies = [
 
 // Logging requests to console
 app.use(morgan('common'));
+// Additionally, creating log stream in log.txt file (flags: 'a' instructs to append logs to file)
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
+  flags: 'a',
+});
+app.use(morgan('common', { stream: accessLogStream }));
 
 // Question: What does this actually do? Wouldn't the request to send the documentation file work regardless?
 app.use(express.static('public'));
