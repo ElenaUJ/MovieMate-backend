@@ -78,10 +78,6 @@ app.get('/movies', function (req, res) {
   res.json(topMovies);
 });
 
-app.get('/documentation', function (req, res) {
-  res.sendFile('public/documentation.html', { root: __dirname });
-});
-
 app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
