@@ -3,12 +3,108 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"> 
-    <title>MyFlix API documentation</title>
+    <title>MyFlix API Documentation</title>
+    <link rel="stylesheet" href="styles.css" type="text/css">
   </head>
   <body>
-    <h1>MyFlix API and architected database</h1>
+    <h1>MyFlix API and Architected Database</h1>
     <p>Server-side component of MyFlix, a "movies" web application. MyFlix will provide users with access to information about different movies, directors, and genres. Users will be able to sign up, update their personal information, and create a list of their favourite movies.</p>
-    <p>Server-side includes the server, business logic, and business layers of the application. It will consist of a well-designed REST API and architected database built using JavaScript, Node.js, Express, and MongoDB. The REST API will be accessed via commonly used HTTP methods like GET and POST. Similar methods (CRUD) will be used to retrieve data from the database and store that data in a non-relational way.
-    </p>
+    <p>Server-side includes the server, business logic, and business layers of the application. It will consist of a well-designed REST API and architected database built using JavaScript, Node.js, Express, and MongoDB. The REST API will be accessed via commonly used HTTP methods like GET and POST. Similar methods (CRUD) will be used to retrieve data from the database and store that data in a non-relational way.</p>
+    <table>
+      <h2>URL endpoints and respective operations</h2>
+      <tr>
+        <th>Business Logic</th>
+        <th>URL</th>
+        <th>HTTP Method</th>
+        <th>Query Parameters</th>
+        <th>Request Body Data Format</th>
+        <th>Response Body Data Format</th>
+      </tr>
+      <tr>
+        <td>Return list of all movies to user</td>
+        <td>/movies</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>None</td>
+        <td>A JSON object holding data about all movies</td>
+      </tr>
+      <tr>
+        <td>Return data about a movie by title</td>
+        <td>/movies/[title]</td>
+        <td>GET</td>
+        <td>Movie title (string)</td>
+        <td>None</td>
+        <td>
+          A JSON object holding data about a movie, containing title, description, genre, director, imageURL, and whether it's featured or not. Example:
+          <pre>{<br>  "title": "The Truman Show",<br>  "description": "The Truman Show is...",<br>  "genre": {<br>    "name": "drama",<br>    "despription": "Drama is a film genre that focuses..."<br>  }<br>  "director": {<br>    "name": "Peter Weir",<br>    "bio": "Peter Lindsay Weir is an Australian film director...",<br>    "birth": 1944,<br>    "death": "N/A"<br>  }<br>  "imageUrl": "https://...",<br>  "featured": false<br>}</pre>
+        </td>
+      </tr>
+      <tr>
+        <td>Return data about a genre by name/title</td>
+        <td>/movies/genres/[genreName]</td>
+        <td>GET</td>
+        <td>Genre name (string)</td>
+        <td>None</td>
+        <td>
+          A JSON object holding a description about a genre. Example:
+          <pre>{<br>  "name": "drama",<br>  "description": "Drama is a film genre that focuses..."<br>}</pre>
+        </td>
+      </tr>
+      <tr>
+        <td>Return data about a director</td>
+        <td>/movies/directors/[directorName]</td>
+        <td>GET</td>
+        <td>Director name (string)</td>
+        <td>None</td>
+        <td>
+          A JSON object holding a description about a director, containing bio, birth year and death year. Example:
+          <pre>{<br>  "name": "Peter Weir",<br>  "bio": "Peter Lindsay Weir is an Australian film director...",<br>  "birth": 1944,<br>  "death": "N/A"<br>}</pre>
+        </td>
+      </tr>
+      <tr>
+        <td>Register new user</td>
+        <td>/users</td>
+        <td>POST</td>
+        <td>None</td>
+        <td>
+          A JSON object holding data about the user to register, structured like:
+          <pre>{<br>  "username": "ElenaUlb",<br>  "password": "password"<br>}</pre>
+        </td>
+        <td>A JSON object holding data about the user just registered, structured like:
+          <pre>{<br>  "username": "ElenaUlb",<br>  "password": "password"<br>  "topMovies": []<br>}</pre></td>
+      </tr>
+      <tr>
+        <td>Update username</td>
+        <td>/users/[username]/[newUsername]</td>
+        <td>PUT</td>
+        <td>Current username (string without spaces),<br>new username (string without spaces)</td>
+        <td>None</td>
+        <td>A text message indicating the new username of the user.</td>
+      </tr>      
+      <tr>
+        <td>Add movie to list of user favourites</td>
+        <td>/users/[username]/topMovies/[title]</td>
+        <td>POST</td>
+        <td>Username (string without spaces)<br>movie title (string)</td>
+        <td>None</td>
+        <td>A text message indicating the successfully added movie by title.</td>
+      </tr>
+      <tr>
+        <td>Remove movie from list of user favourites</td>
+        <td>/users/[username]/topMovies/[title]</td>
+        <td>DELETE</td>
+        <td>Username (string without spaces)<br>movie title (string)</td>        
+        <td>None</td>
+        <td>A text message indicating successful removal of movie by title.</td>
+      </tr>
+      <tr>
+        <td>Deregister current user</td>
+        <td>/users/[username]</td>
+        <td>DELETE</td>
+        <td>Username (string without spaces)</td>
+        <td>None</td>
+        <td>A text message indicating whether user was successfully deregistered.</td>
+      </tr>
+    </table>
   </body>
 </html>
