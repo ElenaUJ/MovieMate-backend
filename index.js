@@ -7,7 +7,7 @@ const express = require('express'),
 // Variable for Express' functionality to configure web server
 const app = express();
 
-let movies = [
+const movies = [
   {
     title: 'The Truman Show',
     description:
@@ -29,7 +29,7 @@ let movies = [
   },
 ];
 
-let users = [
+const users = [
   {
     username: 'ElenaUlb',
     password: 'password',
@@ -61,8 +61,8 @@ app.get('/movies', function (req, res) {
 
 // Gets data about single movie by title
 app.get('/movies/:title', function (req, res) {
-  let title = req.params.title;
-  let movie = movies.find(function (movie) {
+  const title = req.params.title;
+  const movie = movies.find(function (movie) {
     return movie.title === title;
   });
 
@@ -77,8 +77,8 @@ app.get('/movies/:title', function (req, res) {
 
 // Gets data about a genre by genre name
 app.get('/movies/genres/:genreName', function (req, res) {
-  let genreName = req.params.genreName;
-  let genre = movies.find(function (movie) {
+  const genreName = req.params.genreName;
+  const genre = movies.find(function (movie) {
     return movie.genre.name === genreName;
     // .genre has to be added so only the genre property is returned
   }).genre;
@@ -92,8 +92,8 @@ app.get('/movies/genres/:genreName', function (req, res) {
 
 // Gets data about a director by director name
 app.get('/movies/directors/:directorName', function (req, res) {
-  let directorName = req.params.directorName;
-  let director = movies.find(function (movie) {
+  const directorName = req.params.directorName;
+  const director = movies.find(function (movie) {
     return movie.director.name === directorName;
   }).director;
 
@@ -112,8 +112,8 @@ app.get('/movies/directors/:directorName', function (req, res) {
 
 // Registers new user
 app.post('/users', function (req, res) {
-  let newUser = req.body;
-  let isUsernameTaken = users.find(function (user) {
+  const newUser = req.body;
+  const isUsernameTaken = users.find(function (user) {
     return user.username === newUser.username;
   });
 
@@ -131,11 +131,11 @@ app.post('/users', function (req, res) {
 
 // Updates username
 app.put('/users/:username/:newUsername', function (req, res) {
-  let user = users.find(function (user) {
+  const user = users.find(function (user) {
     return user.username === req.params.username;
   });
-  let newUsername = req.params.newUsername;
-  let isUsernameTaken = users.find(function (user) {
+  const newUsername = req.params.newUsername;
+  const isUsernameTaken = users.find(function (user) {
     return user.username === newUsername;
   });
 
@@ -151,14 +151,14 @@ app.put('/users/:username/:newUsername', function (req, res) {
 
 // Adds movie to list of user favourites
 app.post('/users/:username/topMovies/:title', function (req, res) {
-  let user = users.find(function (user) {
+  const user = users.find(function (user) {
     return user.username === req.params.username;
   });
-  let newFavouriteMovie = movies.find(function (movie) {
+  const newFavouriteMovie = movies.find(function (movie) {
     return movie.title === req.params.title;
   });
-  let usersFavourites = user.topMovies;
-  let isMoviePresent = usersFavourites.find(function (movie) {
+  const usersFavourites = user.topMovies;
+  const isMoviePresent = usersFavourites.find(function (movie) {
     return movie.title === newFavouriteMovie.title;
   });
 
@@ -185,10 +185,10 @@ app.post('/users/:username/topMovies/:title', function (req, res) {
 
 // Removes movie from user list of favourites
 app.delete('/users/:username/topMovies/:title', function (req, res) {
-  let user = users.find(function (user) {
+  const user = users.find(function (user) {
     return user.username === req.params.username;
   });
-  let movieToDelete = user.topMovies.find(function (movie) {
+  const movieToDelete = user.topMovies.find(function (movie) {
     return movie.title === req.params.title;
   });
 
@@ -216,7 +216,7 @@ app.delete('/users/:username/topMovies/:title', function (req, res) {
 
 // Deregisters user
 app.delete('/users/:username', function (req, res) {
-  let userToDeregister = users.find(function (user) {
+  const userToDeregister = users.find(function (user) {
     return user.username === req.params.username;
   });
   if (!userToDeregister) {
