@@ -36,7 +36,7 @@
         <td>None</td>
         <td>
           A JSON object holding data about a movie, containing title, description, genre, director, imageURL, and whether it's featured or not. Example:
-          <pre>{<br>  "title": "The Truman Show",<br>  "description": "The Truman Show is...",<br>  "genre": {<br>    "name": "drama",<br>    "despription": "Drama is a film genre that focuses..."<br>  }<br>  "director": {<br>    "name": "Peter Weir",<br>    "bio": "Peter Lindsay Weir is an Australian film director...",<br>    "birth": 1944,<br>    "death": "N/A"<br>  }<br>  "imageUrl": "https://...",<br>  "featured": false<br>}</pre>
+          <pre>{<br>  Title: "Pretty Woman",<br>  Description: "Pretty woman is a movie...",<br>  Genre: {<br>    Name: "Romance",<br>    Description: "A romance film is a genre that focuses..."<br>  }<br>  Director: {<br>    Name: "Garry Marshall",<br>    Bio: "Garry Marshall was an American film director...",<br>    Birth: "1934",<br>    Death: "2016"<br>  }<br>  ImagePath: "https://...",<br>  Featured: false<br>}</pre>
         </td>
       </tr>
       <tr>
@@ -47,7 +47,7 @@
         <td>None</td>
         <td>
           A JSON object holding a description about a genre. Example:
-          <pre>{<br>  "name": "drama",<br>  "description": "Drama is a film genre that focuses..."<br>}</pre>
+          <pre>{<br>  Name: "Drama",<br>  Description: "Drama is a film genre that focuses..."<br>}</pre>
         </td>
       </tr>
       <tr>
@@ -58,7 +58,7 @@
         <td>None</td>
         <td>
           A JSON object holding a description about a director, containing bio, birth year and death year. Example:
-          <pre>{<br>  "name": "Peter Weir",<br>  "bio": "Peter Lindsay Weir is an Australian film director...",<br>  "birth": 1944,<br>  "death": "N/A"<br>}</pre>
+          <pre>{<br>  Name: "Garry Marshall",<br>  Bio: "Garry Marshall was an American film director...",<br>  Birth: "1934",<br>  Death: "2016"<br>}</pre>
         </td>
       </tr>
       <tr>
@@ -68,10 +68,10 @@
         <td>None</td>
         <td>
           A JSON object holding data about the user to register, structured like:
-          <pre>{<br>  "username": "ElenaUlb",<br>  "password": "password"<br>}</pre>
+          <pre>{<br>  Username: "ElenaUlb",<br>  Password: "password",<br>  Birthday: new Date("YYYY-MM-DD")<br>}</pre>
         </td>
         <td>A JSON object holding data about the user just registered, structured like:
-          <pre>{<br>  "username": "ElenaUlb",<br>  "password": "password"<br>  "topMovies": []<br>}</pre></td>
+          <pre>{<br>  Username: "ElenaUlb",<br>  Password: "password"<br>  Birthday: new Date("YYYY-MM-DD"),<br>  TopMovies: []<br>}</pre></td>
       </tr>
       <tr>
         <td>Update username</td>
