@@ -21,44 +21,66 @@
         <th>Response Body Data Format</th>
       </tr>
       <tr>
-        <td>Return list of all movies to user</td>
+        <td>Return list of all movies</td>
         <td>/movies</td>
         <td>GET</td>
         <td>None</td>
         <td>None</td>
-        <td>A JSON object holding data about all movies</td>
+        <td>A JSON array holding data about all movies.</td>
       </tr>
       <tr>
         <td>Return data about a movie by title</td>
-        <td>/movies/[title]</td>
+        <td>/movies/[Title]</td>
         <td>GET</td>
-        <td>Movie title (string)</td>
+        <td>Movie title (case sensitive string)</td>
         <td>None</td>
         <td>
           A JSON object holding data about a movie, containing title, description, genre, director, imageURL, and whether it's featured or not. Example:
-          <pre>{<br>  Title: "Pretty Woman",<br>  Description: "Pretty woman is a movie...",<br>  Genre: {<br>    Name: "Romance",<br>    Description: "A romance film is a genre that focuses..."<br>  }<br>  Director: {<br>    Name: "Garry Marshall",<br>    Bio: "Garry Marshall was an American film director...",<br>    Birth: "1934",<br>    Death: "2016"<br>  }<br>  ImagePath: "https://...",<br>  Featured: false<br>}</pre>
+          <pre>{<br>  "Genre": {<br>    "Name": "Romance",<br>    "Description": "A romance film is a genre that focuses..."<br>  }<br>  "Director": {<br>    "Name": "Garry Marshall",<br>    "Bio": "Garry Marshall was an American film director...",<br>    "Birth": "1934",<br>    "Death": "2016"<br>  }<br>  "_id": "63c59a422b068e2d34cd10a4",<br>  "Title": "Pretty Woman",<br>  "Description": "Pretty woman is a movie...",<br>  "ImagePath": "https://...",<br>  "Featured": false<br>}</pre>
         </td>
       </tr>
       <tr>
-        <td>Return data about a genre by name/title</td>
-        <td>/movies/genres/[genreName]</td>
+        <td>Return data about a genre by name</td>
+        <td>/movies/genres/[GenreName]</td>
         <td>GET</td>
-        <td>Genre name (string)</td>
+        <td>Genre name (case sensitive string)</td>
         <td>None</td>
         <td>
           A JSON object holding a description about a genre. Example:
-          <pre>{<br>  Name: "Drama",<br>  Description: "Drama is a film genre that focuses..."<br>}</pre>
+          <pre>{<br>  "Name": "Drama",<br>  "Description": "Drama is a film genre that focuses..."<br>}</pre>
         </td>
       </tr>
       <tr>
-        <td>Return data about a director</td>
-        <td>/movies/directors/[directorName]</td>
+        <td>Return all movie titles assigned to a certain genre</td>
+        <td>/movies/genres/[GenreName]/movies</td>
         <td>GET</td>
-        <td>Director name (string)</td>
+        <td>Genre name (case sensitive string)</td>
+        <td>None</td>
+        <td>
+          A JSON object holding an array of movie objects containing title and ID. Example:
+          <pre>[<br>  {<br>    "_id": "63c59ea52b068e2d34cd10a6",<br>    "Title": "Forrest Gump"<br>  },<br>  {<br>    "_id": "63c5a6bf2b068e2d34cd10ac",<br>    "Title": "The Shawshank Redemption"<br>  },<br>]</pre>
+        </td>
+      </tr>
+      <tr>
+        <td>Return data about a director by name</td>
+        <td>/movies/directors/[DirectorName]</td>
+        <td>GET</td>
+        <td>Director name (case sensitive string)</td>
         <td>None</td>
         <td>
           A JSON object holding a description about a director, containing bio, birth year and death year. Example:
-          <pre>{<br>  Name: "Garry Marshall",<br>  Bio: "Garry Marshall was an American film director...",<br>  Birth: "1934",<br>  Death: "2016"<br>}</pre>
+          <pre>{<br>  "Name": "Garry Marshall",<br>  "Bio": "Garry Marshall was an American film director...",<br>  "Birth": "1934",<br>  "Death": "2016"<br>}</pre>
+        </td>
+      </tr>
+      <tr>
+        <td>Return all movie titles by a certain director</td>
+        <td>/movies/directors/[DirectorName]/movies</td>
+        <td>GET</td>
+        <td>Director name (case sensitive string)</td>
+        <td>None</td>
+        <td>
+          A JSON object holding an array of movie objects containing title and ID. Example:
+          <pre>[<br>  {<br>    "_id": "63c59a422b068e2d34cd10a4",<br>    "Title": "The Truman Show"<br>  },<br>  {<br>    "_id": "63c6ea402b068e2d34cd10b4",<br>    "Title": "Dead Poets Society"<br>  },<br>]</pre>
         </td>
       </tr>
       <tr>
@@ -67,43 +89,67 @@
         <td>POST</td>
         <td>None</td>
         <td>
-          A JSON object holding data about the user to register, structured like:
-          <pre>{<br>  Username: "ElenaUlb",<br>  Password: "password",<br>  Birthday: new Date("YYYY-MM-DD")<br>}</pre>
+          A JSON object holding data about the user to register (Username, Password and Email required). Example:
+          <pre>{<br>  "Username": "ElenaUlb",<br>  "Password": "password",<br>  "Email": "elenaulb@gmail.com",<br>  "Birthday": "1985-12-13"<br>}</pre>
         </td>
         <td>A JSON object holding data about the user just registered, structured like:
-          <pre>{<br>  Username: "ElenaUlb",<br>  Password: "password"<br>  Birthday: new Date("YYYY-MM-DD"),<br>  TopMovies: []<br>}</pre></td>
+          <pre>{<br>  "Username": "ElenaUlb",<br>  "Password": "password"<br>  "Birthday": "1985-12-13T00:00:00.000Z",<br>  "TopMovies": [],<br>  "_id": "63c99a973a703df101c2288e",<br>  "__v": 0<br>}</pre>
+        </td>
       </tr>
       <tr>
-        <td>Update username</td>
-        <td>/users/[username]/[newUsername]</td>
-        <td>PUT</td>
-        <td>Current username (string without spaces),<br>new username (string without spaces)</td>
+        <td>Return data about a user by username</td>
+        <td>/users/[Username]</td>
+        <td>GET</td>
+        <td>Username (case sensitive string)</td>
         <td>None</td>
-        <td>A text message indicating the new username of the user.</td>
+        <td>
+          A JSON object holding data about the user. Example:
+          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "password",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6"<br>  ]<br>}</pre>
+        </td>
+      </tr>
+      <tr>
+        <td>Update user info by username</td>
+        <td>/users/[Username]</td>
+        <td>PUT</td>
+        <td>Username (case sensitive string)</td>
+        <td>
+          A JSON object holding data about information to be updated. Example:
+          <pre>{<br>  "Password": "new_password"<br>}</pre>
+        </td>
+        <td>
+          A JSON object holding data about the updated user. Example:
+          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "new_password",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6"<br>  ]<br>}</pre>
+        </td>
       </tr>      
       <tr>
-        <td>Add movie to list of user favourites</td>
-        <td>/users/[username]/topMovies/[title]</td>
+        <td>Add movie to list of user favourites if not yet present</td>
+        <td>/users/[Username]/topMovies/[MovieId]</td>
         <td>POST</td>
-        <td>Username (string without spaces)<br>movie title (string)</td>
+        <td>Username (case sensitive string),<br>Movie ID (string)</td>
         <td>None</td>
-        <td>A text message indicating the successfully added movie by title.</td>
+        <td>
+          A JSON object holding data about the updated user. Example:
+          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "new_password",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6",<br>    "63c598cb2b068e2d34cd10a3"<br>  ]<br>}</pre>
+        </td>
       </tr>
       <tr>
         <td>Remove movie from list of user favourites</td>
-        <td>/users/[username]/topMovies/[title]</td>
+        <td>/users/[Username]/topMovies/[MovieId]</td>
         <td>DELETE</td>
-        <td>Username (string without spaces)<br>movie title (string)</td>        
+        <td>Username (case sensitive string),<br>Movie ID (string)</td>     
         <td>None</td>
-        <td>A text message indicating successful removal of movie by title.</td>
+        <td>
+          A JSON object holding data about the updated user. Example:
+          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "new_password",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6",<br>  ]<br>}</pre>
+        </td>
       </tr>
       <tr>
-        <td>Deregister current user</td>
-        <td>/users/[username]</td>
+        <td>Deregister user</td>
+        <td>/users/[Username]</td>
         <td>DELETE</td>
-        <td>Username (string without spaces)</td>
+        <td>Username (case sensitive string)</td>
         <td>None</td>
-        <td>A text message indicating whether user was successfully deregistered.</td>
+        <td>A text message indicating that user was successfully deregistered.</td>
       </tr>
     </table>
   </body>
