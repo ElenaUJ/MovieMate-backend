@@ -2,45 +2,28 @@ const express = require('express'),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
   fs = require('fs'),
-  path = require('path');
+  path = require('path'),
+  mongoose = require('mongoose'),
+  Models = require('./models.js');
 
 // Variable for Express' functionality to configure web server
 const app = express();
 
-const movies = [
-  {
-    title: 'The Truman Show',
-    description:
-      "The Truman Show is a 1998 American science fiction film directed by Peter Weir and written by Andrew Niccol. The film stars Jim Carrey as Truman Burbank, a man who is the unknowing star of a reality television show in which everything in his life is staged for the camera. Truman's entire life, from his birth to his present, has been broadcast on television to a global audience, but he is unaware of this and believes that everything in his life is normal. As he begins to suspect that his life is not as it seems and that he is being watched, Truman sets out to discover the truth about his life and the world around him. The film explores themes of reality, identity, and the media's influence on society.",
-    genre: {
-      name: 'drama',
-      description:
-        'A drama film is a genre of film that focuses on characters and their relationships, and often deals with sensitive, emotional themes. Drama films often aim to evoke strong feelings and emotions in the audience, such as sadness, joy, or hope. These films often tell stories about characters struggling with personal issues, relationships, or societal problems, and they may explore themes such as family, love, loss, identity, or coming of age.',
-    },
-    director: {
-      name: 'Peter Weir',
-      bio: 'Peter Lindsay Weir is an Australian film director, producer, and screenwriter. He was born in Sydney, Australia in 1944 and began his career in the film industry in the 1970s. Weir is known for his diverse body of work, which includes films in a range of genres, such as drama, comedy, and thriller. Some of his most popular and critically acclaimed films include Picnic at Hanging Rock, The Last Wave, Dead Poets Society, and The Truman Show. Weir has been nominated for several awards throughout his career, including three Academy Awards for Best Director. In addition to his work in film, Weir has also directed and produced television shows and stage productions.',
-      birth: 1944,
-      death: 'N/A',
-    },
-    imageUrl:
-      'https://m.media-amazon.com/images/M/MV5BMDIzODcyY2EtMmY2MC00ZWVlLTgwMzAtMjQwOWUyNmJjNTYyXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_.jpg',
-    featured: false,
-  },
-];
+app.use(bodyParser.json());
+// Parses bodies from URL requests, extended: true means req.body object can contain any value, not just strings
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const users = [
-  {
-    username: 'ElenaUlb',
-    password: 'password',
-    topMovies: [],
-  },
-];
+// Refer to model names defined in models.js file
+const Movies = Models.Movie;
+const Users = Models.User;
+
+// Suppresses deprecation warning
+mongoose.set('strictQuery', true);
+// Allows Mongoose to connect to that database so it can perform CRUD operations on its documents from within REST API
+mongoose.connect('mongodb://localhost:27017/myFlixDB');
 
 //Routing of static files
 app.use(express.static('public'));
-
-app.use(bodyParser.json());
 
 // Logging requests to console
 app.use(morgan('common'));
@@ -56,181 +39,267 @@ app.get('/', function (req, res) {
 
 // Returns list of all movies
 app.get('/movies', function (req, res) {
-  res.status(200).json(movies);
+  Movies.find()
+    .then(function (movies) {
+      res.status(200).json(movies);
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
 // Gets data about single movie by title
 app.get('/movies/:title', function (req, res) {
   const title = req.params.title;
-  const movie = movies.find(function (movie) {
-    return movie.title === title;
-  });
-
-  if (!movie) {
-    res
-      .status(404)
-      .send('Movie with the title of ' + req.params.title + ' was not found.');
-  } else {
-    res.status(200).json(movie);
-  }
+  Movies.findOne({ Title: title })
+    .then(function (movie) {
+      if (!movie) {
+        res
+          .status(404)
+          .send('Movie with the title of ' + title + ' was not found.');
+      } else {
+        res.status(200).json(movie);
+      }
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
 // Gets data about a genre by genre name
 app.get('/movies/genres/:genreName', function (req, res) {
   const genreName = req.params.genreName;
-  const genre = movies.find(function (movie) {
-    return movie.genre.name === genreName;
-    // .genre has to be added so only the genre property is returned
-  }).genre;
+  Movies.findOne({ 'Genre.Name': genreName })
+    .then(function (genre) {
+      if (!genre) {
+        return res.status(404).send('Genre ' + genreName + ' was not found.');
+      } else {
+        // .Genre has to be added so only the genre key is returned
+        res.status(200).json(genre.Genre);
+      }
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
 
-  if (!genre) {
-    res.status(404).send('Genre ' + req.params.genreName + ' was not found.');
-  } else {
-    res.status(200).json(genre);
-  }
+// Gets all movies that have a certain genre
+app.get('/movies/genres/:genreName/movies', function (req, res) {
+  const genreName = req.params.genreName;
+  Movies.find({ 'Genre.Name': genreName })
+    .select('Title')
+    .then(function (movieTitles) {
+      if (movieTitles.length === 0) {
+        return res.status(404).send('Genre ' + genreName + ' was not found.');
+      } else {
+        res.status(200).json(movieTitles);
+      }
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
 // Gets data about a director by director name
 app.get('/movies/directors/:directorName', function (req, res) {
   const directorName = req.params.directorName;
-  const director = movies.find(function (movie) {
-    return movie.director.name === directorName;
-  }).director;
+  Movies.findOne({ 'Director.Name': directorName })
+    .then(function (director) {
+      if (!director) {
+        res
+          .status(404)
+          .send(
+            'Director with the name of ' + directorName + ' was not found.'
+          );
+      } else {
+        res.status(200).json(director.Director);
+      }
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
 
-  if (!director) {
-    res
-      .status(404)
-      .send(
-        'Director with the name of ' +
-          req.params.directorName +
-          ' was not found.'
-      );
-  } else {
-    res.status(200).json(director);
-  }
+// Gets all movies by a certain director
+app.get('/movies/directors/:directorName/movies', function (req, res) {
+  const directorName = req.params.directorName;
+  Movies.find({ 'Director.Name': directorName })
+    .select('Title')
+    .then(function (movieTitles) {
+      if (movieTitles.length === 0) {
+        return res
+          .status(404)
+          .send(
+            'Director with the name of ' + directorName + ' was not found.'
+          );
+      } else {
+        res.status(200).json(movieTitles);
+      }
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
 // Registers new user
 app.post('/users', function (req, res) {
-  const newUser = req.body;
-  const isUsernameTaken = users.find(function (user) {
-    return user.username === newUser.username;
-  });
-
-  if (!newUser.username) {
-    res.status(400).send('Missing username in request body');
-  } else if (isUsernameTaken) {
-    res.status(409).send('Username is already taken.');
-  } else {
-    // Adds an empty array of favourite movies to user object
-    newUser.topMovies = [];
-    users.push(newUser);
-    res.status(201).json(newUser);
-  }
-});
-
-// Updates username
-app.put('/users/:username/:newUsername', function (req, res) {
-  const user = users.find(function (user) {
-    return user.username === req.params.username;
-  });
-  const newUsername = req.params.newUsername;
-  const isUsernameTaken = users.find(function (user) {
-    return user.username === newUsername;
-  });
-
-  if (!user) {
-    res.status(404).send('Username ' + req.params.username + ' was not found.');
-  } else if (isUsernameTaken) {
-    res.status(409).send('Username is already taken.');
-  } else {
-    user.username = newUsername;
-    res.status(200).send('Username has been updated to: ' + user.username);
-  }
-});
-
-// Adds movie to list of user favourites
-app.post('/users/:username/topMovies/:title', function (req, res) {
-  const user = users.find(function (user) {
-    return user.username === req.params.username;
-  });
-  const newFavouriteMovie = movies.find(function (movie) {
-    return movie.title === req.params.title;
-  });
-  const usersFavourites = user.topMovies;
-  const isMoviePresent = usersFavourites.find(function (movie) {
-    return movie.title === newFavouriteMovie.title;
-  });
-
-  if (!user) {
-    res.status(404).send('Username ' + req.params.username + ' was not found.');
-  } else if (!newFavouriteMovie) {
-    res
-      .status(404)
-      .send('Movie with the title of ' + req.params.title + ' was not found.');
-  } else if (isMoviePresent) {
-    res.status(409).send('Movie is already on the list.');
-  } else {
-    usersFavourites.push(newFavouriteMovie);
-    res
-      .status(201)
-      .send(
-        newFavouriteMovie.title +
-          ' was added to ' +
-          user.username +
-          "'s top movies."
-      );
-  }
-});
-
-// Removes movie from user list of favourites
-app.delete('/users/:username/topMovies/:title', function (req, res) {
-  const user = users.find(function (user) {
-    return user.username === req.params.username;
-  });
-  const movieToDelete = user.topMovies.find(function (movie) {
-    return movie.title === req.params.title;
-  });
-
-  if (!user) {
-    res.status(404).send('Username ' + req.params.username + ' was not found.');
-  } else if (!movieToDelete) {
-    res
-      .status(404)
-      .send('Movie with the title of ' + req.params.title + ' was not found.');
-  } else {
-    // Returns filtered array with all movies but the one to delete
-    user.topMovies = user.topMovies.filter(function (otherMovies) {
-      return otherMovies.title !== movieToDelete.title;
+  const username = req.body.Username;
+  Users.findOne({ Username: username })
+    .then(function (user) {
+      if (user) {
+        return res.status(409).send(username + ' already exists.');
+      } else {
+        // .create command takes object. Keys specified in Schema, values received by request body.
+        Users.create({
+          Username: username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        })
+          .then(function (newUser) {
+            res.status(201).json(newUser);
+          })
+          .catch(function (error) {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          });
+      }
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
     });
-    res
-      .status(200)
-      .send(
-        movieToDelete.title +
-          ' was removed from ' +
-          user.username +
-          "'s top movies."
-      );
+});
+
+//Gets data about a user by username
+app.get('/users/:username', function (req, res) {
+  const username = req.params.username;
+  Users.findOne({ Username: username })
+    .then(function (user) {
+      if (!user) {
+        res.status(404).send('No user with the name of ' + username);
+      } else {
+        res.status(200).json(user);
+      }
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// Updates user info by username
+app.put('/users/:username', function (req, res) {
+  const currentUsername = req.params.username;
+  function updateUser() {
+    Users.findOneAndUpdate(
+      { Username: currentUsername },
+      {
+        $set: {
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        },
+      },
+      // This line is to specify that the following callback function will take the updated object as parameter
+      { new: true }
+    )
+      .then(function (updatedUser) {
+        res.status(200).json(updatedUser);
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  }
+
+  if (currentUsername !== req.body.Username) {
+    Users.findOne({ Username: req.body.Username }).then(function (user) {
+      if (user) {
+        return res.status(409).send(req.body.Username + ' already exists.');
+      } else {
+        updateUser();
+      }
+    });
+  } else {
+    updateUser();
   }
 });
 
-// Deregisters user
+// Adds a movie to user's list of favourites if not already present
+app.post('/users/:username/topMovies/:movieid', function (req, res) {
+  const username = req.params.username;
+  const movieId = req.params.movieid;
+  Users.findOne({ Username: username, TopMovies: movieId })
+    .then(function (movieIsPresent) {
+      if (movieIsPresent) {
+        return res.status(409).send('Movie is already on your list.');
+      } else {
+        Users.findOneAndUpdate(
+          { Username: username },
+          {
+            // Only adds if not already present (but wouldn't throw error)
+            $addToSet: { TopMovies: movieId },
+          },
+          { new: true }
+        )
+          .then(function (updatedUser) {
+            res.status(200).json(updatedUser);
+          })
+          .catch(function (error) {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          });
+      }
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+// Removes movie from user's list of favourites
+app.delete('/users/:username/topMovies/:movieid', function (req, res) {
+  const username = req.params.username;
+  const movieId = req.params.movieid;
+  Users.findOneAndUpdate(
+    { Username: username },
+    {
+      $pull: { TopMovies: movieId },
+    },
+    { new: true }
+  )
+    .then(function (updatedUser) {
+      res.status(200).json(updatedUser);
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+// Delete a user by username
 app.delete('/users/:username', function (req, res) {
-  const userToDeregister = users.find(function (user) {
-    return user.username === req.params.username;
-  });
-  if (!userToDeregister) {
-    res.status(404).send('Username ' + req.params.username + ' was not found.');
-  } else {
-    users = users.filter(function (otherUsers) {
-      return otherUsers.username !== userToDeregister.username;
+  const username = req.params.username;
+  Users.findOneAndRemove({ Username: username })
+    .then(function (user) {
+      if (!user) {
+        res.status(400).send(username + ' was not found.');
+      } else {
+        res.status(200).send(username + ' was deleted.');
+      }
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
     });
-    res
-      .status(200)
-      .send(
-        'User ' + userToDeregister.username + ' was successfully deregistered.'
-      );
-  }
 });
 
 app.use(function (err, req, res, next) {
