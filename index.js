@@ -209,7 +209,8 @@ app.post('/users', function (req, res) {
     });
 });
 
-//Gets data about a user by username
+// Gets data about a user by name
+// Will be deleted before app goes live
 app.get('/users/:username', function (req, res) {
   const username = req.params.username;
   Users.findOne({ Username: username })
