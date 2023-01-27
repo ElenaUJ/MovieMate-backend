@@ -4,8 +4,8 @@
   "description": "Server-side component of MyFlix, a \"movies\" web application. Consisting of REST API and architected database built using JavaScript, Node.js, Express, and MongoDB.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node index.js",
+    "devStart": "nodemon index.js"
   },
   "repository": {
     "type": "git",
