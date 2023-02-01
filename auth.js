@@ -42,9 +42,8 @@ module.exports = function (router) {
           });
         }
         req.login(user, { session: false }, function (error) {
-          // Question: Isn't a return statement needed in the error condition? Do finish execution of function, or an if else statement? Otherwise wouldn't a token be generted in spite of the error?
           if (error) {
-            res.send(error);
+            return res.send(error);
           }
           let token = generateJWTToken(user.toJSON());
           return res.json({
