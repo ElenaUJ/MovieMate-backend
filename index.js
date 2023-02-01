@@ -205,35 +205,39 @@ app.get(
   }
 );
 
-// Registers new user
-app.post('/users', function (req, res) {
-  const username = req.body.Username;
-  Users.findOne({ Username: username })
-    .then(function (user) {
-      if (user) {
-        return res.status(409).send(username + ' already exists.');
-      } else {
-        // .create command takes object. Keys specified in Schema, values received by request body.
-        Users.create({
-          Username: username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
-        })
-          .then(function (newUser) {
-            res.status(201).json(newUser);
+// Registers new user (and hashes their password)
+app.post(
+  '/users',
+    let hashedPassword = Users.hashPassword(req.body.Password);
+
+    const username = req.body.Username;
+    Users.findOne({ Username: username })
+      .then(function (user) {
+        if (user) {
+          return res.status(409).send(username + ' already exists.');
+        } else {
+          // .create command takes object. Keys specified in Schema, values received by request body.
+          Users.create({
+            Username: username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
           })
-          .catch(function (error) {
-            console.error(error);
-            res.status(500).send('Error: ' + error);
-          });
-      }
-    })
-    .catch(function (error) {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
-});
+            .then(function (newUser) {
+              res.status(201).json(newUser);
+            })
+            .catch(function (error) {
+              console.error(error);
+              res.status(500).send('Error: ' + error);
+            });
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  }
+);
 
 // Gets data about a user by name
 // Will be deleted before app goes live
@@ -259,16 +263,30 @@ app.put(
   passport.authenticate('jwt', { session: false }),
   function (req, res) {
     const currentUsername = req.params.username;
+    const newUsername = req.body.Username;
+    const newPassword = req.body.Password;
+
     function updateUser() {
+      // If statement necessary to prevent bcrypt error when no passwort is request body
+      if (newPassword) {
+        let hashedPassword = Users.hashPassword(newPassword);
+        updates = {
+          Username: newUsername,
+          Password: hashedPassword,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        };
+      } else {
+        updates = {
+          Username: newUsername,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        };
+      }
       Users.findOneAndUpdate(
         { Username: currentUsername },
         {
-          $set: {
-            Username: req.body.Username,
-            Password: req.body.Password,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday,
-          },
+          $set: updates,
         },
         // This line is to specify that the following callback function will take the updated object as parameter
         { new: true }
@@ -282,10 +300,10 @@ app.put(
         });
     }
 
-    if (currentUsername !== req.body.Username) {
-      Users.findOne({ Username: req.body.Username }).then(function (user) {
+    if (currentUsername !== newUsername) {
+      Users.findOne({ Username: newUsername }).then(function (user) {
         if (user) {
-          return res.status(409).send(req.body.Username + ' already exists.');
+          return res.status(409).send(newUsername + ' already exists.');
         } else {
           updateUser();
         }

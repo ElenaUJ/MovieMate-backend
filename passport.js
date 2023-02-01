@@ -16,10 +16,9 @@ passport.use(
       passwordField: 'Password',
     },
     // Question: Where is this callback function?? Is it the middleware function handling the endpoint requests?
-    function (username, password, callback) {
-      console.log(username + ' ' + password);
-      // Using Mongoose method to check for username
-      // Question: Why not for password? That is not verified at all?
+    function (username, hashedPassword, callback) {
+      console.log(username + ' ' + hashedPassword);
+      // Using Mongoose method to check for username and password
       Users.findOne({ Username: username }, function (error, user) {
         // Question: Why multiple if statements here and no if else? When a condition applies the execution of the function will be stopped because of the return statements. Wouldn't if else statements result in exactly the same behaviour?
         if (error) {
@@ -31,7 +30,14 @@ passport.use(
           console.log('incorrect username');
           // null means: no error; false means, no user
           return callback(null, false, {
-            message: 'Incorrect username or password.',
+            message: 'Incorrect username.',
+          });
+        }
+
+        if (!user.validatePassword(hashedPassword)) {
+          console.log('incorrect password');
+          return callback(null, false, {
+            message: 'Incorrect password',
           });
         }
 
