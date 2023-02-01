@@ -46,6 +46,9 @@ let auth = require('./auth.js')(app);
 const passport = require('passport');
 require('./passport.js');
 
+// Input validation
+const { check, validationResult } = require('express-validator');
+
 // Refer to model names defined in models.js file
 const Movies = Models.Movie;
 const Users = Models.User;
@@ -208,6 +211,37 @@ app.get(
 // Registers new user (and hashes their password)
 app.post(
   '/users',
+  // Validation logic
+  [
+    check('Username')
+      .not()
+      .isEmpty()
+      .withMessage('Username is required.')
+      // If there is no email, code will stop here, otherwise format will be validated
+      .bail()
+      .isAlphanumeric()
+      .withMessage(
+        'Username contains non alphanumeric characters - not allowed.'
+      ),
+    check('Password').not().isEmpty().withMessage('Password is required.'),
+    check('Email')
+      .not()
+      .isEmpty()
+      .withMessage('Email is required.')
+      .bail()
+      .isEmail()
+      .withMessage('Email does not appear to be valid.'),
+  ],
+  function (req, res) {
+    // validationResult is a method provided by express-validator library
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // array() is another method of the express-validator library
+      // Status code 422: unprocessable entity
+      // Rest of code will not be executed: database remains safe from potential malicious code
+      return res.status(422).json({ errors: errors.array() });
+    }
+
     let hashedPassword = Users.hashPassword(req.body.Password);
 
     const username = req.body.Username;
@@ -261,7 +295,25 @@ app.get('/users/:username', function (req, res) {
 app.put(
   '/users/:username',
   passport.authenticate('jwt', { session: false }),
+  [
+    check('Username')
+      // added optional() method, because not necessarily all fields will be updated
+      .optional()
+      .isAlphanumeric()
+      .withMessage(
+        'Username contains non alphanumeric characters - not allowed.'
+      ),
+    check('Email')
+      .optional()
+      .isEmail()
+      .withMessage('Email does not appear to be valid.'),
+  ],
   function (req, res) {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
     const currentUsername = req.params.username;
     const newUsername = req.body.Username;
     const newPassword = req.body.Password;
