@@ -13,6 +13,32 @@ app.use(bodyParser.json());
 // Parses bodies from URL requests, extended: true means req.body object can contain any value, not just strings
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Cors middleware. Making sure that app uses CORS specifying domains which get access to API
+const cors = require('cors');
+// Per default, this grants access to all origins
+app.use(cors());
+
+// The fewer domains have access, the more secure - if I only wanted to give certain domains access, I would do it like this:
+// let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       // Question: Why is that here? If there is no origin header- why should that grant access?
+//       if (!origin) {
+//         return callback(null, true);
+//       }
+//       if (allowedOrigins.indexOf(origin) === -1) {
+//         let message =
+//           "The CORS policy for this application doesn't allow access from origin" +
+//           origin;
+//         // false means access to API will be denied
+//         return callback(new Error(message), false);
+//       }
+//       return callback(null, true);
+//     },
+//   })
+// );
+
 // Import of auth.js file, must come after bodyparser middleware! App argument ensures that Express is available in auth.js file, too
 // Question: How is it enough to import the file? How does the app understand that when the /login endpoint is requested, it has to look in the auth.js file for the logic?
 //Passport module and passport.js file are required, too
