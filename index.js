@@ -291,6 +291,13 @@ app.get('/users/:username', function (req, res) {
     });
 });
 
+// get all users //delete!!!
+app.get('/users', function (req, res) {
+  Users.find().then(function (users) {
+    res.json(users);
+  });
+});
+
 // Updates user info by username
 app.put(
   '/users/:username',
