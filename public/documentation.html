@@ -8,8 +8,11 @@
   </head>
   <body>
     <h1>MyFlix API and Architected Database</h1>
-    <p>Server-side component of MyFlix, a "movies" web application. MyFlix will provide users with access to information about different movies, directors, and genres. Users will be able to sign up, update their personal information, and create a list of their favourite movies.</p>
-    <p>Server-side includes the server, business logic, and business layers of the application. It will consist of a well-designed REST API and architected database built using JavaScript, Node.js, Express, and MongoDB. The REST API will be accessed via commonly used HTTP methods like GET and POST. Similar methods (CRUD) will be used to retrieve data from the database and store that data in a non-relational way.</p>
+      <p>The MyFlix movie app will provide users with access to information about different movies, directors, and genres. Users will be able to register, update their personal information, and manage a list of their favourite movies.</p>
+      <p>The server-side comprises a well-designed REST API and architected NoSQL database, built using JavaScript, Node.js, Express and MongoDB.</p>
+    <h2>Requirements</h2>
+      <p>Node.js version 18.12 and up, MongoDB version 6 and up</p>
+      <p><b>Node modules: </b>express 4.18.2, bcrypt 5.1.0, body-parser 1.20.1, cors 2.8.5, express 4.18.2, express-validator 6.14.3, jsonwebtoken 9.0.0, mongoose 6.8.4, morgan 1.10.0, passport 0.6.0, passport-jwt 4.0.1, passport-local 1.0.0</p>
     <table>
       <h2>URL endpoints and respective operations</h2>
       <tr>
@@ -89,22 +92,21 @@
         <td>POST</td>
         <td>None</td>
         <td>
-          A JSON object holding data about the user to register (Username, Password and Email required). Example:
+          A JSON object holding data about the user to register (Username [alphanumeric], Password and Email required). Example:
           <pre>{<br>  "Username": "ElenaUlb",<br>  "Password": "password",<br>  "Email": "elenaulb@gmail.com",<br>  "Birthday": "1985-12-13"<br>}</pre>
         </td>
         <td>A JSON object holding data about the user just registered, structured like:
-          <pre>{<br>  "Username": "ElenaUlb",<br>  "Password": "password"<br>  "Birthday": "1985-12-13T00:00:00.000Z",<br>  "TopMovies": [],<br>  "_id": "63c99a973a703df101c2288e",<br>  "__v": 0<br>}</pre>
+          <pre>{<br>  "Username": "ElenaUlb",<br>  "Password": "*hashed password*"<br>  "Birthday": "1985-12-13T00:00:00.000Z",<br>  "TopMovies": [],<br>  "_id": "63c99a973a703df101c2288e",<br>  "__v": 0<br>}</pre>
         </td>
       </tr>
       <tr>
-        <td>Return data about a user by username</td>
-        <td>/users/[Username]</td>
-        <td>GET</td>
+        <td>User login</td>
+        <td>/login</td>
+        <td>POST</td>
         <td>Username (case sensitive string)</td>
         <td>None</td>
-        <td>
-          A JSON object holding data about the user. Example:
-          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "password",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6"<br>  ]<br>}</pre>
+        <td>A JSON object holding data about the user just logged in and the JWT token, structured like:
+          <pre>{<br>  "user": {<br>    "Username": "ElenaUlb",<br>    "Password": "*hashed password*"<br>    "Birthday": "1985-12-13T00:00:00.000Z",<br>    "TopMovies": [],<br>    "_id": "63c99a973a703df101c2288e",<br>    "__v": 0<br>  },<br>  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp..."<br>}</pre>
         </td>
       </tr>
       <tr>
@@ -118,7 +120,7 @@
         </td>
         <td>
           A JSON object holding data about the updated user. Example:
-          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "new_password",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6"<br>  ]<br>}</pre>
+          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "*hashed new_password*",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6"<br>  ]<br>}</pre>
         </td>
       </tr>      
       <tr>
@@ -129,7 +131,7 @@
         <td>None</td>
         <td>
           A JSON object holding data about the updated user. Example:
-          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "new_password",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6",<br>    "63c598cb2b068e2d34cd10a3"<br>  ]<br>}</pre>
+          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "*hashed password*",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6",<br>    "63c598cb2b068e2d34cd10a3"<br>  ]<br>}</pre>
         </td>
       </tr>
       <tr>
@@ -140,7 +142,7 @@
         <td>None</td>
         <td>
           A JSON object holding data about the updated user. Example:
-          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "new_password",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6",<br>  ]<br>}</pre>
+          <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "*hashed password*",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6",<br>  ]<br>}</pre>
         </td>
       </tr>
       <tr>
@@ -152,5 +154,10 @@
         <td>A text message indicating that user was successfully deregistered.</td>
       </tr>
     </table>
+    <h2>Data security</h2>
+    <p>For this app, basic HTTP authentication has been implemented for user login, and JWT-based authentication for all other requests (except user registration which is accessible to anonynmous users).<br><i>This is an unfinished solution, because right now a user would be authorized to access other user's information or even make changes. I am planning to address this in the future.</i></p>
+    <p>CORS middleware is implemented.</p>
+    <p>Passwords are hashed.</p>
+    <p>Data input via user registration and update are validated on the backend (username, password, email are required, username is not to contain special characters, email has to be in email format).</p>
   </body>
 </html>
