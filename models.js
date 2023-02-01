@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 let movieSchema = new Schema({
   Title: { type: String, required: true },
-  Decsription: { type: String, required: true },
+  Description: { type: String, required: true },
   Genre: {
     Name: String,
     Description: String,
