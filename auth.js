@@ -30,7 +30,12 @@ module.exports = function (router) {
       { session: false },
       // Is this the callback function referred to in the local strategy? Is the info variable for the message?
       function (error, user, info) {
-        if (error || !user) {
+        // You will only have info if there was an error during the local authentication (see local strategy in passport.js)
+        if (info) {
+          return res.status(400).json(info);
+        }
+
+        if (error) {
           return res.status(400).json({
             message: 'Something is not right',
             user: user,
