@@ -26,16 +26,12 @@ let userSchema = new Schema({
   Birthday: Date,
   TopMovies: [
     {
-      // Mongoose specific data type that is used to store MongoDB ObjectId
       type: mongoose.Schema.Types.ObjectId,
-      // ref attribute referres to db.movies collection
       ref: 'Movie',
     },
   ],
 });
 
-// A function with 'Movie' and 'User' as the model's names, and the respective schema's
-// Models act as represenation of the underlying database data
 // Hashing and validating password
 userSchema.statics.hashPassword = function (password) {
   return bcrypt.hashSync(password, 10);
