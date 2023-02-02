@@ -227,7 +227,6 @@ app.post(
         if (user) {
           return res.status(409).send(req.body.Username + ' already exists.');
         } else {
-          // .create command takes object. Keys specified in Schema, values received by request body.
           Users.create({
             Username: req.body.Username,
             Password: hashedPassword,
