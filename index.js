@@ -29,7 +29,9 @@ const Users = Models.User;
 
 // Suppresses deprecation warning
 mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://localhost:27017/myFlixDB');
+mongoose.connect(process.env.CONNECTION_URI);
+// Local database
+//mongoose.connect('mongodb://localhost:27017/myFlixDB');
 
 //Routing of static files (e.g. documentation.html)
 app.use(express.static('public'));
