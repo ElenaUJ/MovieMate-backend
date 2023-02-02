@@ -20,7 +20,8 @@ The server-side comprises a well-designed REST API and architected NoSQL databas
 
 ## Links
 
-- [Documentation]()
+- [Documentation](https://myflix-movie-app-elenauj.onrender.com/documentation.html)
+- [API](https://myflix-movie-app-elenauj.onrender.com/)
 - [Code URL](https://https://github.com/ElenaUJ/MyFlix-movie-app)
 
 ## Process
