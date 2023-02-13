@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MyFlix API Documentation</title>
-    <link rel="stylesheet" href="styles.css" type="text/css">
+    <link rel="stylesheet" href="styles.css" type="text/css" />
   </head>
   <body>
     <h1>MyFlix API and Architected Database</h1>
-      <p>The MyFlix movie app will provide users with access to information about different movies, directors, and genres. Users will be able to register, update their personal information, and manage a list of their favourite movies.</p>
-      <p>The server-side comprises a well-designed REST API and architected NoSQL database, built using JavaScript, Node.js, Express and MongoDB.</p>
+    <p>
+      The MyFlix movie app will provide users with access to information about
+      different movies, directors, and genres. Users will be able to register,
+      update their personal information, and manage a list of their favourite
+      movies.
+    </p>
+    <p>
+      The server-side comprises a well-designed REST API and architected NoSQL
+      database, built using JavaScript, Node.js, Express and MongoDB.
+    </p>
     <h2>Requirements</h2>
-      <p>Node.js version 18.12 and up, MongoDB version 6 and up</p>
-      <p><b>Node modules: </b>express 4.18.2, bcrypt 5.1.0, body-parser 1.20.1, cors 2.8.5, express 4.18.2, express-validator 6.14.3, jsonwebtoken 9.0.0, mongoose 6.8.4, morgan 1.10.0, passport 0.6.0, passport-jwt 4.0.1, passport-local 1.0.0</p>
+    <p>Node.js version 18.12 and up, MongoDB version 6 and up</p>
+    <p>
+      <b>Node modules: </b>express 4.18.2, bcrypt 5.1.0, body-parser 1.20.1,
+      cors 2.8.5, express 4.18.2, express-validator 6.14.3, jsonwebtoken 9.0.0,
+      mongoose 6.8.4, morgan 1.10.0, passport 0.6.0, passport-jwt 4.0.1,
+      passport-local 1.0.0
+    </p>
     <table>
       <h2>URL endpoints and respective operations</h2>
       <tr>
@@ -38,7 +51,9 @@
         <td>Movie title (case sensitive string)</td>
         <td>None</td>
         <td>
-          A JSON object holding data about a movie, containing title, description, genre, director, imageURL, and whether it's featured or not. Example:
+          A JSON object holding data about a movie, containing title,
+          description, genre, director, imageURL, and whether it's featured or
+          not. Example:
           <pre>{<br>  "Genre": {<br>    "Name": "Romance",<br>    "Description": "A romance film is a genre that focuses..."<br>  }<br>  "Director": {<br>    "Name": "Garry Marshall",<br>    "Bio": "Garry Marshall was an American film director...",<br>    "Birth": "1934",<br>    "Death": "2016"<br>  }<br>  "_id": "63c59a422b068e2d34cd10a4",<br>  "Title": "Pretty Woman",<br>  "Description": "Pretty woman is a movie...",<br>  "ImagePath": "https://...",<br>  "Featured": false<br>}</pre>
         </td>
       </tr>
@@ -60,7 +75,8 @@
         <td>Genre name (case sensitive string)</td>
         <td>None</td>
         <td>
-          A JSON object holding an array of movie objects containing title and ID. Example:
+          A JSON object holding an array of movie objects containing title and
+          ID. Example:
           <pre>[<br>  {<br>    "_id": "63c59ea52b068e2d34cd10a6",<br>    "Title": "Forrest Gump"<br>  },<br>  {<br>    "_id": "63c5a6bf2b068e2d34cd10ac",<br>    "Title": "The Shawshank Redemption"<br>  },<br>]</pre>
         </td>
       </tr>
@@ -71,7 +87,8 @@
         <td>Director name (case sensitive string)</td>
         <td>None</td>
         <td>
-          A JSON object holding a description about a director, containing bio, birth year and death year. Example:
+          A JSON object holding a description about a director, containing bio,
+          birth year and death year. Example:
           <pre>{<br>  "Name": "Garry Marshall",<br>  "Bio": "Garry Marshall was an American film director...",<br>  "Birth": "1934",<br>  "Death": "2016"<br>}</pre>
         </td>
       </tr>
@@ -82,7 +99,8 @@
         <td>Director name (case sensitive string)</td>
         <td>None</td>
         <td>
-          A JSON object holding an array of movie objects containing title and ID. Example:
+          A JSON object holding an array of movie objects containing title and
+          ID. Example:
           <pre>[<br>  {<br>    "_id": "63c59a422b068e2d34cd10a4",<br>    "Title": "The Truman Show"<br>  },<br>  {<br>    "_id": "63c6ea402b068e2d34cd10b4",<br>    "Title": "Dead Poets Society"<br>  },<br>]</pre>
         </td>
       </tr>
@@ -92,10 +110,13 @@
         <td>POST</td>
         <td>None</td>
         <td>
-          A JSON object holding data about the user to register (Username [alphanumeric], Password and Email required). Example:
+          A JSON object holding data about the user to register (Username
+          [alphanumeric], Password and Email required). Example:
           <pre>{<br>  "Username": "ElenaUlb",<br>  "Password": "password",<br>  "Email": "elenaulb@gmail.com",<br>  "Birthday": "1985-12-13"<br>}</pre>
         </td>
-        <td>A JSON object holding data about the user just registered, structured like:
+        <td>
+          A JSON object holding data about the user just registered, structured
+          like:
           <pre>{<br>  "Username": "ElenaUlb",<br>  "Password": "*hashed password*"<br>  "Birthday": "1985-12-13T00:00:00.000Z",<br>  "TopMovies": [],<br>  "_id": "63c99a973a703df101c2288e",<br>  "__v": 0<br>}</pre>
         </td>
       </tr>
@@ -103,9 +124,14 @@
         <td>User login</td>
         <td>/login</td>
         <td>POST</td>
-        <td>Username (case sensitive string)</td>
         <td>None</td>
-        <td>A JSON object holding data about the user just logged in and the JWT token, structured like:
+        <td>
+          A JSON object holding username (alphanumeric) and password. Example:
+          <pre>{<br>  "Username": "ElenaUlb",<br>  "Password": "password"<br>}</pre>
+        </td>
+        <td>
+          A JSON object holding data about the user just logged in and the JWT
+          token, structured like:
           <pre>{<br>  "user": {<br>    "Username": "ElenaUlb",<br>    "Password": "*hashed password*"<br>    "Birthday": "1985-12-13T00:00:00.000Z",<br>    "TopMovies": [],<br>    "_id": "63c99a973a703df101c2288e",<br>    "__v": 0<br>  },<br>  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp..."<br>}</pre>
         </td>
       </tr>
@@ -122,12 +148,12 @@
           A JSON object holding data about the updated user. Example:
           <pre>{<br>  "_id": "63c5fadf2b068e2d34cd10b1",<br>  "Username": "ElenaUlb",<br>  "Password": "*hashed new_password*",<br>  "Email": "elena.ulbjon@icloud.com",<br>  "Birthday": "1985-12-06T00:00:00.000Z",<br>  "TopMovies": [<br>    "63c59a422b068e2d34cd10a4",<br>    "63c59ea52b068e2d34cd10a6"<br>  ]<br>}</pre>
         </td>
-      </tr>      
+      </tr>
       <tr>
         <td>Add movie to list of user favourites if not yet present</td>
         <td>/users/[Username]/topMovies/[MovieId]</td>
         <td>POST</td>
-        <td>Username (case sensitive string),<br>Movie ID (string)</td>
+        <td>Username (case sensitive string),<br />Movie ID (string)</td>
         <td>None</td>
         <td>
           A JSON object holding data about the updated user. Example:
@@ -138,7 +164,7 @@
         <td>Remove movie from list of user favourites</td>
         <td>/users/[Username]/topMovies/[MovieId]</td>
         <td>DELETE</td>
-        <td>Username (case sensitive string),<br>Movie ID (string)</td>     
+        <td>Username (case sensitive string),<br />Movie ID (string)</td>
         <td>None</td>
         <td>
           A JSON object holding data about the updated user. Example:
@@ -151,13 +177,27 @@
         <td>DELETE</td>
         <td>Username (case sensitive string)</td>
         <td>None</td>
-        <td>A text message indicating that user was successfully deregistered.</td>
+        <td>
+          A text message indicating that user was successfully deregistered.
+        </td>
       </tr>
     </table>
     <h2>Data security</h2>
-    <p>For this app, basic HTTP authentication has been implemented for user login, and JWT-based authentication for all other requests (except user registration which is accessible to anonynmous users).<br><i>This is an unfinished solution, because right now a user would be authorized to access other user's information or even make changes. I am planning to address this in the future.</i></p>
+    <p>
+      For this app, basic HTTP authentication has been implemented for user
+      login, and JWT-based authentication for all other requests (except user
+      registration which is accessible to anonynmous users).<br /><i
+        >This is an unfinished solution, because right now a user would be
+        authorized to access other user's information or even make changes. I am
+        planning to address this in the future.</i
+      >
+    </p>
     <p>CORS middleware is implemented.</p>
     <p>Passwords are hashed.</p>
-    <p>Data input via user registration and update are validated on the backend (username, password, email are required, username is not to contain special characters, email has to be in email format).</p>
+    <p>
+      Data input via user registration and update are validated on the backend
+      (username, password, email are required, username is not to contain
+      special characters, email has to be in email format).
+    </p>
   </body>
 </html>
