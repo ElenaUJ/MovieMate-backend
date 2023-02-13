@@ -53,16 +53,20 @@ app.get('/', function (req, res) {
 });
 
 // Returns list of all movies
-app.get('/movies', function (req, res) {
-  Movies.find()
-    .then(function (movies) {
-      res.status(200).json(movies);
-    })
-    .catch(function (error) {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
-});
+app.get(
+  '/movies',
+  passport.authenticate('jwt', { session: false }),
+  function (req, res) {
+    Movies.find()
+      .then(function (movies) {
+        res.status(200).json(movies);
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  }
+);
 
 // Gets data about single movie by title
 app.get(
