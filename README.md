@@ -1,4 +1,4 @@
-# MyFlix-movie-app - The Backend
+# MovieMate-movie-app - The Backend
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@
 
 ## Overview
 
-The MyFlix movie app will provide users with access to information about different movies, directors, and genres. Users will be able to register, update their personal information, and manage a list of their favourite movies.
+The MovieMate movie app will provide users with access to information about different movies, directors, and genres. Users will be able to register, update their personal information, and manage a list of their favourite movies.
 
 The server-side comprises a well-designed REST API and architected NoSQL database, built using JavaScript, Node.js, Express and MongoDB.
 
@@ -22,7 +22,7 @@ The server-side comprises a well-designed REST API and architected NoSQL databas
 
 - [Documentation](https://myflix-movie-app-elenauj.onrender.com/documentation.html)
 - [API](https://myflix-movie-app-elenauj.onrender.com/)
-- [Code URL](https://github.com/ElenaUJ/MyFlix-movie-app)
+- [Code URL](https://github.com/ElenaUJ/MovieMate-backend)
 
 ## Process
 
