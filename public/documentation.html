@@ -9,23 +9,36 @@
   <body>
     <h1>MovieMate API and Architected Database</h1>
     <p>
-      The MovieMate movie app will provide users with access to information
-      about different movies, directors, and genres. Users will be able to
-      register, update their personal information, and manage a list of their
-      favourite movies.
+      The MovieMate API provides users with access to a vast collection of
+      movie, director, and genre information. It enables user registration,
+      personal information management, and management of a personalized list of
+      favorite movies.
     </p>
     <p>
-      The server-side comprises a well-designed REST API and architected NoSQL
-      database, built using JavaScript, Node.js, Express and MongoDB.
+      The server-side is composed of a well-designed REST API and architected
+      NoSQL database. The backend is built using JavaScript, Node.js, Express,
+      and MongoDB.
     </p>
     <h2>Requirements</h2>
-    <p>Node.js version 18.12 and up, MongoDB version 6 and up</p>
-    <p>
-      <b>Node modules: </b>express 4.18.2, bcrypt 5.1.0, body-parser 1.20.1,
-      cors 2.8.5, express 4.18.2, express-validator 6.14.3, jsonwebtoken 9.0.0,
-      mongoose 6.8.4, morgan 1.10.0, passport 0.6.0, passport-jwt 4.0.1,
-      passport-local 1.0.0
-    </p>
+    <p>The following are required to run the MovieMate API:</p>
+    <ul>
+      <li>Node.js version 18.12 or higher</li>
+      <li>MongoDB version 6.0 or higher</li>
+    </ul>
+    <p>The following Node.js modules are also required:</p>
+    <ul>
+      <li>bcrypt 5.1.0</li>
+      <li>body-parser 1.20.1</li>
+      <li>cors 2.8.5</li>
+      <li>express 4.18.2</li>
+      <li>express-validator 6.14.3</li>
+      <li>jsonwebtoken 9.0.0</li>
+      <li>mongoose 6.8.4</li>
+      <li>morgan 1.10.0</li>
+      <li>passport 0.6.0</li>
+      <li>passport-jwt 4.0.1</li>
+      <li>passport-local 1.0.0</li>
+    </ul>
     <table>
       <h2>URL endpoints and respective operations</h2>
       <tr>
@@ -182,22 +195,161 @@
         </td>
       </tr>
     </table>
-    <h2>Data security</h2>
+    <h2>Data Security</h2>
     <p>
-      For this app, basic HTTP authentication has been implemented for user
-      login, and JWT-based authentication for all other requests (except user
-      registration which is accessible to anonynmous users).<br /><i
-        >This is an unfinished solution, because right now a user would be
-        authorized to access other user's information or even make changes. I am
-        planning to address this in the future.</i
-      >
+      To ensure the security of your data, this API implements basic HTTP
+      authentication for user login, and JWT-based authentication for all other
+      requests (except user registration, which is accessible to anonymous
+      users).
     </p>
-    <p>CORS middleware is implemented.</p>
-    <p>Passwords are hashed.</p>
     <p>
-      Data input via user registration and update are validated on the backend
-      (username, password, email are required, username is not to contain
-      special characters, email has to be in email format).
+      In addition, the API employs CORS middleware and hashes all passwords for
+      added protection.
     </p>
+    <p>
+      Data input through user registration and updates is validated on the
+      backend. Usernames, passwords, and email addresses are required fields,
+      usernames are not allowed to contain special characters, and email
+      addresses must be in a valid email format.
+    </p>
+    <h2>Error Responses</h2>
+    <p>The following error status codes may be returned:</p>
+    <h3>Examples for error responses</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>400</td>
+          <td>
+            Used to indicate an invalid request, typically due to missing or
+            invalid parameters (here: when there is an error during local
+            authentication.)
+          </td>
+        </tr>
+        <tr>
+          <td>401</td>
+          <td>
+            Used when the request requires authentication and authentication
+            failed or has not been provided.
+          </td>
+        </tr>
+        <tr>
+          <td>404</td>
+          <td>Used when the requested resource is not found.</td>
+        </tr>
+        <tr>
+          <td>409</td>
+          <td>
+            Indicates a request conflict with the current state of the target
+            resource (i.e. when it already exists).
+          </td>
+        </tr>
+        <tr>
+          <td>422</td>
+          <td>
+            Occurs when a request is well-formed, however, due to semantic
+            errors it is unable to be processed
+          </td>
+        </tr>
+        <tr>
+          <td>500</td>
+          <td>
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>The error message format will be JSON.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Error Response</th>
+          <th>Status Code</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Local Authentication Issue</td>
+          <td>400</td>
+          <td>{"message": "Something is not right", "user": {} }</td>
+        </tr>
+        <tr>
+          <td>Login: Username not found</td>
+          <td>400</td>
+          <td>{"message": "Incorrect username."}</td>
+        </tr>
+        <tr>
+          <td>Login: Incorrect Password</td>
+          <td>400</td>
+          <td>{"message": "Incorrect password."}</td>
+        </tr>
+        <tr>
+          <td>JWT Authentication Issue</td>
+          <td>401</td>
+          <td>{"message": "Unauthorized"}</td>
+        </tr>
+        <tr>
+          <td>User not found</td>
+          <td>404</td>
+          <td>{"message": "&lt;username&gt; was not found."}</td>
+        </tr>
+        <tr>
+          <td>Movie not found</td>
+          <td>404</td>
+          <td>
+            {"message": "Movie with the title of &lt;movie_title&gt; was not
+            found."}
+          </td>
+        </tr>
+        <tr>
+          <td>Genre not found</td>
+          <td>404</td>
+          <td>{"message": "Genre &lt;genre_name&gt; was not found."}</td>
+        </tr>
+        <tr>
+          <td>Director not found</td>
+          <td>404</td>
+          <td>
+            {"message": "Director with the name of &lt;director_name&gt; was not
+            found."}
+          </td>
+        </tr>
+        <tr>
+          <td>Username already exists</td>
+          <td>409</td>
+          <td>{"message": "&lt;username&gt; already exists."}</td>
+        </tr>
+        <tr>
+          <td>Movie already in top list</td>
+          <td>409</td>
+          <td>{"message": "Movie is already on your list."}</td>
+        </tr>
+        <tr>
+          <td>Validation errors</td>
+          <td>422</td>
+          <td>{"message": "An array of error objects"}.</td>
+        </tr>
+        <tr>
+          <td>CORS policy issue</td>
+          <td>500</td>
+          <td>
+            {"message": "The CORS policy for this application doesn’t allow
+            access from origin &lt;origin&gt;"}
+          </td>
+        </tr>
+        <tr>
+          <td>Unexpected server error</td>
+          <td>500</td>
+          <td>{"message": "Something broke."}</td>
+        </tr>
+      </tbody>
+    </table>
   </body>
 </html>
