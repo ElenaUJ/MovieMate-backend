@@ -12,6 +12,7 @@ const cors = require('cors');
 let allowedOrigins = [
   'http://localhost:1234',
   'https://my-moviemate.netlify.app',
+  'http://localhost:4200',
 ];
 
 app.use(
