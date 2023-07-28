@@ -13,6 +13,7 @@ let allowedOrigins = [
   'http://localhost:1234',
   'https://my-moviemate.netlify.app',
   'http://localhost:4200',
+  'https://elenauj.github.io/MovieMate-Angular',
 ];
 
 app.use(
