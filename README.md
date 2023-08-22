@@ -1,16 +1,17 @@
-# MovieMate-movie-app - The Backend
+# MovieMate - The Backend
 
 ## Table of Contents
 
 - [Overview](#overview)
 - [Links](#links)
-- [Process](#process)
-  - [Programming Languages](#programming-languages)
-  - [Dependencies](#dependencies)
 - [Features](#features)
   - [Data Operations Enabled by HTTP Requests](#data-operations-enabled-by-http-requests)
   - [Authentication and Authorization](#authentication-and-authorization)
   - [Data Validation and Security](#data-validation-and-security)
+- [Process](#process)
+  - [Main Technologies and Dependencies](#main-technologies-and-dependencies)
+  - [Linting and Formatting](#linting-and-formatting)
+  - [API Documentation](#api-documentation)
 
 ## Overview
 
@@ -20,35 +21,9 @@ The server-side comprises a well-designed REST API and architected NoSQL databas
 
 ## Links
 
-- [Documentation](https://myflix-movie-app-elenauj.onrender.com/documentation.html)
+- [API Documentation](https://myflix-movie-app-elenauj.onrender.com/documentation.html)
 - [API](https://myflix-movie-app-elenauj.onrender.com/)
 - [Code URL](https://github.com/ElenaUJ/MyFlix-movie-app)
-
-## Process
-
-### Programming Languages
-
-- JavaScript
-- HTML/CSS
-
-### Dependencies
-
-- MongoDB version 6.0.3
-- Node.js version 18.12.1
-  - express 4.18.2
-  - bcrypt 5.1.0
-  - body-parser 1.20.1
-  - cors 2.8.5
-  - express 4.18.2
-  - express-validator 6.14.3
-  - jsonwebtoken 9.0.0
-  - mongoose 6.8.4
-  - morgan 1.10.0
-  - passport 0.6.0
-  - passport-jwt 4.0.1
-  - passport-local 1.0.0
-- [ESLint rules](https://github.com/mydea/simple-pokedex-app/blob/master/.eslintrc)
-- [Prettier configuration](https://stackoverflow.com/questions/55430906/prettier-single-quote-for-javascript-and-json-double-quote-for-html-sass-and-c)
 
 ## Features
 
@@ -79,3 +54,16 @@ CORS middleware is implemented.
 Passwords are hashed.
 
 Data input via user registration and update are validated on the backend (username, password, email are required, username is not to contain special characters, email has to be in email format).
+
+## Process
+
+### Main Technologies and Dependencies
+
+**Technologies:** Node.js, Express, MongoDB
+
+**Dependencies:** For a complete list of dependencies, please refer to the [package.json](./package.json) file.
+
+### Linting and Formatting
+
+- ESLint Rules: [View rules](https://github.com/mydea/simple-pokedex-app/blob/master/.eslintrc)
+- Prettier configuration: [View configuration](https://stackoverflow.com/questions/55430906/prettier-single-quote-for-javascript-and-json-double-quote-for-html-sass-and-c)
