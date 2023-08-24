@@ -136,7 +136,7 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB');
 
 1. Start the project using the following command:
 
-`npm start`
+   `npm start`
 
 2. Open your web browser and go to `http://localhost:8080` to access the application.
 
