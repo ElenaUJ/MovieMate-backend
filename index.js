@@ -19,6 +19,8 @@ let allowedOrigins = [
   'https://my-moviemate.netlify.app',
   'http://localhost:4200',
   'https://elenauj.github.io',
+  'http://elena-uj-moviemate-react.s3-website-us-east-1.amazonaws.com',
+  'http://ex25-bucket.s3-website-us-east-1.amazonaws.com',
 ];
 
 app.use(
