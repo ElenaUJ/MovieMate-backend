@@ -56,9 +56,9 @@ const Users = Models.User;
 
 // Suppresses deprecation warning
 mongoose.set('strictQuery', true);
-mongoose.connect(process.env.CONNECTION_URI);
+// mongoose.connect(process.env.CONNECTION_URI);
 // Local database
-//mongoose.connect('mongodb://localhost:27017/myFlixDB');
+mongoose.connect('mongodb://localhost:27017/myFlixDB');
 
 //Routing of static files (e.g. documentation.html)
 app.use(express.static('public'));
@@ -536,7 +536,12 @@ app.get('/thumbnails', (req, res) => {
   s3Client
     .send(new ListObjectsV2Command(listObjectsParams))
     .then((listObjectsResponse) => {
-      res.status(200).send(listObjectsResponse);
+      // Exclude empty prefix entry from list
+      const filteredList = listObjectsResponse.Contents.filter((entry) => {
+        return entry.Size !== 0;
+      });
+
+      res.status(200).send(filteredList);
     })
     .catch(function (err) {
       console.error(err);
