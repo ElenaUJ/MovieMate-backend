@@ -559,7 +559,7 @@ app.post('/images', (req, res) => {
 });
 
 /**
- * Gets all resized images/thumbnails from the bucket
+ * Gets all resized images/thumbnails from the bucket (not used on client-side)
  */
 app.get('/thumbnails', (req, res) => {
   listObjectsParams = {
@@ -576,6 +576,27 @@ app.get('/thumbnails', (req, res) => {
       });
 
       res.status(200).send(filteredList);
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+app.get('/images/:imageName', (req, res) => {
+  const imageName = req.params.imageName;
+
+  const getObjectParams = {
+    Bucket: IMAGES_BUCKET,
+    Key: `original-images/${imageName}`, // Adjust the path based on your folder structure
+  };
+
+  // Retrieve the image from S3
+  s3Client
+    .send(new GetObjectCommand(getObjectParams))
+    .then((data) => {
+      // Send the image data as the response
+      data.Body.pipe(res);
     })
     .catch(function (err) {
       console.error(err);
