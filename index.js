@@ -74,6 +74,26 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
 app.use(morgan('common'));
 app.use(morgan('common', { stream: accessLogStream }));
 
+// S3 Image upload and retrieval functionality
+// Instantiation of Client and Configuration Classes/Objects
+const {
+  S3Client,
+  ListObjectsV2Command,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require('@aws-sdk/client-s3');
+const isProduction = process.env.NODE_ENV === 'production';
+const s3Client = new S3Client({
+  region: 'us-east-1',
+  endpoint: isProduction ? undefined : 'http://localhost:4566',
+  forcePathStyle: isProduction ? undefined : true,
+});
+const IMAGES_BUCKET = isProduction
+  ? process.env.IMAGES_BUCKET
+  : 'my-cool-local-bucket';
+const fileUpload = require('express-fileupload');
+app.use(fileUpload());
+
 /** Endpoint handlers */
 app.get('/', function (req, res) {
   res.send('Movie database is being contructed.');
@@ -504,6 +524,11 @@ app.delete(
   }
 );
 
+/**
+ * Upload and retrieve images from AWS S3 bucket
+ */
+
+// Error handler
 app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
@@ -516,5 +541,5 @@ app.use(function (err, req, res, next) {
  * @param {number} port - The port to listen on.
  */
 app.listen(8080, function () {
-  console.log('MyFlix app is listening to port 8080.');
+  console.log('MovieMate is listening to port 8080.');
 });
