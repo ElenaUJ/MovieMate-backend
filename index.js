@@ -525,8 +525,24 @@ app.delete(
 );
 
 /**
- * Upload and retrieve images from AWS S3 bucket
+ * Gets all resized images/thumbnails from the bucket
  */
+app.get('/thumbnails', (req, res) => {
+  listObjectsParams = {
+    Bucket: IMAGES_BUCKET,
+    Prefix: 'resized-images/',
+  };
+
+  s3Client
+    .send(new ListObjectsV2Command(listObjectsParams))
+    .then((listObjectsResponse) => {
+      res.status(200).send(listObjectsResponse);
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
 // Error handler
 app.use(function (err, req, res, next) {
