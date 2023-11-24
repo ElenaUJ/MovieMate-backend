@@ -525,6 +525,38 @@ app.delete(
 );
 
 /**
+ * Uploads image to bucket
+ */
+app.post('/images', (req, res) => {
+  const file = req.files.image;
+  const fileName = req.files.image.name;
+  const tempPath = `./temp_files/${fileName}`;
+
+  // There will need to be a solution put in place to empty that temporary files folder
+  file.mv(tempPath, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error: ' + err);
+    }
+
+    const putObjectParams = {
+      Bucket: IMAGES_BUCKET,
+      Key: `original-images/${fileName}`,
+      Body: file.data,
+    };
+    s3Client
+      .send(new PutObjectCommand(putObjectParams))
+      .then(
+        res.status(200).send('Image ' + fileName + ' uploaded successfully.')
+      )
+      .catch(function (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+});
+
+/**
  * Gets all resized images/thumbnails from the bucket
  */
 app.get('/thumbnails', (req, res) => {
