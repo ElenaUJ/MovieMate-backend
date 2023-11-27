@@ -559,7 +559,7 @@ app.post('/images', (req, res) => {
 });
 
 /**
- * Gets all resized images/thumbnails from the bucket (not used on client-side)
+ * Gets all resized images/thumbnails from the bucket
  */
 app.get('/thumbnails', (req, res) => {
   listObjectsParams = {
@@ -570,12 +570,16 @@ app.get('/thumbnails', (req, res) => {
   s3Client
     .send(new ListObjectsV2Command(listObjectsParams))
     .then((listObjectsResponse) => {
-      // Exclude empty prefix entry from list
-      const filteredList = listObjectsResponse.Contents.filter((entry) => {
+      // Exclude empty prefix entry from list and extract S3 URL
+      const thumbnailArray = listObjectsResponse.Contents.filter((entry) => {
         return entry.Size !== 0;
+      }).map((entry) => {
+        return isProduction
+          ? `https://${IMAGES_BUCKET}/${entry.Key}`
+          : `http://localhost:4566/${IMAGES_BUCKET}/${entry.Key}`;
       });
 
-      res.status(200).send(filteredList);
+      res.status(200).send(thumbnailArray);
     })
     .catch(function (err) {
       console.error(err);
@@ -583,15 +587,15 @@ app.get('/thumbnails', (req, res) => {
     });
 });
 
+/**
+ * Gets one image in original size
+ */
 app.get('/images/:imageName', (req, res) => {
-  const imageName = req.params.imageName;
-
   const getObjectParams = {
     Bucket: IMAGES_BUCKET,
-    Key: `original-images/${imageName}`, // Adjust the path based on your folder structure
+    Key: `original-images/${req.params.imageName}`, // Adjust the path based on your folder structure
   };
 
-  // Retrieve the image from S3
   s3Client
     .send(new GetObjectCommand(getObjectParams))
     .then((data) => {
@@ -603,6 +607,10 @@ app.get('/images/:imageName', (req, res) => {
       res.status(500).send('Error: ' + err);
     });
 });
+
+/**
+ * Gets one image thumbnail
+ */
 
 // Error handler
 app.use(function (err, req, res, next) {
