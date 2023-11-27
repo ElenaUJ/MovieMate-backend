@@ -20,7 +20,7 @@ let allowedOrigins = [
   'http://localhost:4200',
   'https://elenauj.github.io',
   'http://elena-uj-moviemate-react.s3-website-us-east-1.amazonaws.com',
-  'http://ex25-bucket.s3-website-us-east-1.amazonaws.com',
+  `http://${IMAGES_BUCKET}.s3.amazonaws.com`,
 ];
 
 app.use(
@@ -575,7 +575,7 @@ app.get('/thumbnails', (req, res) => {
         return entry.Size !== 0;
       }).map((entry) => {
         return isProduction
-          ? `https://${IMAGES_BUCKET}/${entry.Key}`
+          ? `http://${IMAGES_BUCKET}.s3.amazonaws.com/${entry.Key}`
           : `http://localhost:4566/${IMAGES_BUCKET}/${entry.Key}`;
       });
 
