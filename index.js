@@ -593,7 +593,7 @@ app.get('/thumbnails', (req, res) => {
 app.get('/images/:imageName', (req, res) => {
   const getObjectParams = {
     Bucket: IMAGES_BUCKET,
-    Key: `original-images/${req.params.imageName}`, // Adjust the path based on your folder structure
+    Key: `original-images/${req.params.imageName}`,
   };
 
   s3Client
@@ -607,10 +607,6 @@ app.get('/images/:imageName', (req, res) => {
       res.status(500).send('Error: ' + err);
     });
 });
-
-/**
- * Gets one image thumbnail
- */
 
 // Error handler
 app.use(function (err, req, res, next) {
