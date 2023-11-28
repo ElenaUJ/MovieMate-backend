@@ -13,6 +13,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // CORS middleware
+// Initialization of IMAGES_BUCKET
+const isProduction = process.env.NODE_ENV === 'production';
+const IMAGES_BUCKET = isProduction
+  ? process.env.IMAGES_BUCKET
+  : 'my-cool-local-bucket';
+
 const cors = require('cors');
 let allowedOrigins = [
   'http://localhost:1234',
@@ -84,15 +90,11 @@ const {
   PutObjectCommand,
   GetObjectCommand,
 } = require('@aws-sdk/client-s3');
-const isProduction = process.env.NODE_ENV === 'production';
 const s3Client = new S3Client({
   region: 'us-east-1',
   endpoint: isProduction ? undefined : 'http://localhost:4566',
   forcePathStyle: isProduction ? undefined : true,
 });
-const IMAGES_BUCKET = isProduction
-  ? process.env.IMAGES_BUCKET
-  : 'my-cool-local-bucket';
 const fileUpload = require('express-fileupload');
 app.use(fileUpload());
 
