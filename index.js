@@ -534,13 +534,13 @@ app.delete(
 app.post('/images', (req, res) => {
   const file = req.files.image;
   const fileName = req.files.image.name;
-  const tempPath = `./temp_files/${fileName}`;
+  const tempPath = `${__dirname}/temp_files/${fileName}`;
 
   // There will need to be a solution put in place to empty that temporary files folder
   file.mv(tempPath, (err) => {
     if (err) {
       console.error(err);
-      return res.status(500).send('Error: ' + err);
+      return res.status(500).send('Error moving file: ' + err);
     }
 
     const putObjectParams = {
@@ -555,7 +555,7 @@ app.post('/images', (req, res) => {
       )
       .catch(function (err) {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).send('Error S3 upload: ' + err);
       });
   });
 });
