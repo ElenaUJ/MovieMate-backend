@@ -536,7 +536,6 @@ app.post('/images', (req, res) => {
   const fileName = req.files.image.name;
   const tempPath = `${__dirname}/temp_files/${fileName}`;
 
-  // There will need to be a solution put in place to empty that temporary files folder
   file.mv(tempPath, (err) => {
     if (err) {
       console.error(err);
